@@ -1,0 +1,67 @@
+# macOS
+.DS_Store
+
+# Claude Code memory
+.claude/
+
+# Video data
+traffic_data/
+
+# YOLO tracking cache
+track_cache/
+
+# Models
+*.pt
+
+# Python
+__pycache__/
+*.pyc
+venv*/
+
+# VS Code
+settings.json
+
+# Debug clips
+debug/
+
+# Old/backup files
+*_old.*
+*_old/
+*_backup*.*
+*_backup*/
+
+# Node
+node_modules/
+
+# Playwright
+test-results/
+
+# Logs
+sync.log
+download.log
+pipeline.log
+
+# Laptop-only scripts
+pull_latest_data.sh
+
+# Generated data files — transferred via pull_latest_data.sh, not git
+traffic_events.db
+traffic_events.tsv
+
+# Sweep runtime state (Mini-local)
+sweep_state.json
+
+# Spot-check runtime state (Mini-local)
+spotcheck_state.json
+
+# Re-include the classifier scripts even though traffic_data/ is ignored.
+# Each level is un-ignored in turn — git won't enter an excluded directory,
+# so we must open traffic_data/ -> license_plates/ -> classifier/ step by step,
+# re-ignoring each level's contents, then add back only the .py files.
+!traffic_data/
+traffic_data/*
+!traffic_data/license_plates/
+traffic_data/license_plates/*
+!traffic_data/license_plates/classifier/
+traffic_data/license_plates/classifier/*
+!traffic_data/license_plates/classifier/*.py
