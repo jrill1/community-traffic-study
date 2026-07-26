@@ -151,6 +151,7 @@
   .dir-toggle button:first-child { border-left: none; }
   .dir-toggle button.active { background: var(--ink); color: #fff; }
   .dir-toggle button:not(.active):hover { background: var(--page); }
+  .cycle-arrow { display: none; }
 
   .legend { display: flex; flex-wrap: nowrap; gap: 0 10px; margin: 0 0 16px; font-size: 11px; color: var(--muted); }
   .legend span { display: flex; align-items: center; gap: 6px; }
@@ -293,6 +294,54 @@
   .preset-btn:hover { background: var(--page); }
   .preset-btn.active { background: var(--ink); color: var(--page); border-color: var(--ink); }
   .preset-sep { width: 1px; height: 24px; background: var(--line); flex-shrink: 0; margin: 0 2px; }
+  .date-primary { display: flex; align-items: center; gap: 3px; }
+
+  /* ── Mobile ─────────────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .wrap { padding: 22px 16px 48px; }
+    .top-row { grid-template-columns: 3fr 7fr; column-gap: 16px; row-gap: 8px; margin-bottom: 16px; }
+    .top-left { display: contents; }
+    .eyebrow { font-size: 7.8px; margin: 0 0 -15px; grid-column: 1 / -1; }
+    .top-row h1, .date-nav, .span-presets { grid-column: 1 / -1; }
+    .top-row h1 { margin: 0 0 0px; }
+    #dateCompareSelector { grid-column: 1 / -1; grid-row: auto; margin-top: 28px; }
+    .date-nav { flex-wrap: wrap; row-gap: 6px; }
+    .date-nav.span-mode { margin: 0 0 -3px; }
+    .date-nav:not(.span-mode) { margin: 0 0 2px; }
+    .date-primary { width: calc(50% - 35px); justify-content: flex-start; }
+    #dateNav .date-primary .date-label-btn { width: auto; min-width: 0; flex-shrink: 1; flex-grow: 1; padding: 0 6px; font-size: 12px; }
+    #dateNav .date-primary .date-step { width: 26px; flex-shrink: 0; }
+    .span-presets { flex-wrap: nowrap; gap: 4px; justify-content: space-between; }
+    .date-nav:not(.span-mode) + .span-presets { display: none; }
+    .date-nav.span-mode + .span-presets { margin: 0 0 8px; }
+    .preset-btn { padding: 0 8px; font-size: 10px; }
+    .preset-sep { margin: 0 1px; }
+    .legend { flex-wrap: nowrap; gap: 0 7px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .legend::-webkit-scrollbar { display: none; }
+    .legend span { gap: 4px; flex-shrink: 0; }
+    .legend .swatch { width: 9px; height: 9px; }
+    .filter-row { flex-wrap: wrap; row-gap: 12px; }
+    .chart-header-row { flex-wrap: wrap; row-gap: 10px; }
+    #compareBtn { display: none; }
+    .cycle-row { display: flex; align-items: center; gap: 4px; }
+    .cycle-arrow {
+      display: flex; align-items: center; justify-content: center;
+      width: 20px; height: 24px; flex-shrink: 0; padding: 0;
+      background: none; border: 1px solid var(--line); border-radius: 4px;
+      font-size: 12px; color: var(--muted); cursor: pointer;
+    }
+    .dir-toggle button:not(.active) { display: none; }
+    .dir-toggle button.active { border-left: none; }
+    .panel { padding-left: 21.66px; padding-right: 21.66px; }
+    #dirToggle button, #pathToggle button, #parkingToggle button { font-size: 0; }
+    #dirToggle button::after, #pathToggle button::after, #parkingToggle button::after { content: attr(data-short); font-size: 11px; }
+    .legend .mph-suffix { display: none; }
+    .stats { grid-template-columns: 1fr; }
+    .stat { padding: 11.088px 14px; }
+    .stat .k { font-size: 7.15px; margin: 0 0 7.392px; }
+    .stat .v { font-size: 20px; }
+    .stat .note { font-size: 7px; margin: 5.544px 0 0; }
+  }
 </style>
 </head>
 <body>
@@ -303,19 +352,23 @@
       <h1>Oakland Rd traffic</h1>
 
       <div class="date-nav" id="dateNav">
-        <button class="date-step" id="prevDay" aria-label="Previous day">&#8249;</button>
-        <button class="date-label-btn" id="dateLabel" aria-label="Pick a date">
-          <span class="date-dayname" id="dateDayname"></span><span class="date-dot">·</span><span id="dateFmt"></span>
-        </button>
-        <button class="date-step" id="nextDay" aria-label="Next day">&#8250;</button>
+        <div class="date-primary">
+          <button class="date-step" id="prevDay" aria-label="Previous day">&#8249;</button>
+          <button class="date-label-btn" id="dateLabel" aria-label="Pick a date">
+            <span class="date-dayname" id="dateDayname"></span><span class="date-dot">·</span><span id="dateFmt"></span>
+          </button>
+          <button class="date-step" id="nextDay" aria-label="Next day">&#8250;</button>
+        </div>
         <input type="date" id="datePicker" tabindex="-1" aria-hidden="true" />
         <button class="span-btn" id="spanToggle" aria-label="Expand to date range">&#8594;&#124; <span>Span</span></button>
         <span class="span-sep" aria-hidden="true">&#8594;</span>
-        <button class="date-step" id="prevEndDay" aria-label="Previous end day">&#8249;</button>
-        <button class="date-label-btn" id="endDateLabel" aria-label="Pick end date">
-          <span class="date-dayname" id="endDateDayname"></span><span class="date-dot">·</span><span id="endDateFmt"></span>
-        </button>
-        <button class="date-step" id="nextEndDay" aria-label="Next end day">&#8250;</button>
+        <div class="date-primary">
+          <button class="date-step" id="prevEndDay" aria-label="Previous end day">&#8249;</button>
+          <button class="date-label-btn" id="endDateLabel" aria-label="Pick end date">
+            <span class="date-dayname" id="endDateDayname"></span><span class="date-dot">·</span><span id="endDateFmt"></span>
+          </button>
+          <button class="date-step" id="nextEndDay" aria-label="Next end day">&#8250;</button>
+        </div>
         <input type="date" id="endDatePicker" tabindex="-1" aria-hidden="true" />
         <button class="date-step" id="spanClose" aria-label="Collapse to single day">&#215;</button>
       </div>
@@ -417,7 +470,7 @@
 
   <div class="panel">
     <div class="panel-header">
-      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:10px;">
+      <div class="chart-header-row" style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:10px;">
         <div style="display:flex;align-items:center;gap:14px;">
           <h2>Speed distribution</h2>
           <div class="view-toggle" id="viewToggle">
@@ -435,29 +488,41 @@
           </button>
         </div>
       </div>
-      <div style="display:flex;flex-direction:row;gap:16px;align-items:flex-end;">
+      <div class="filter-row" style="display:flex;flex-direction:row;gap:16px;align-items:flex-end;">
         <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
           <span style="font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);">Direction</span>
-          <div class="dir-toggle" id="dirToggle">
-            <button class="active" data-dir="both">All</button>
-            <button data-dir="etw">W ← E</button>
-            <button data-dir="wte">W → E</button>
+          <div class="cycle-row">
+            <button class="cycle-arrow" data-cycle="dirToggle" data-cycle-step="-1" aria-label="Previous direction filter">&#8249;</button>
+            <div class="dir-toggle" id="dirToggle">
+              <button class="active" data-dir="both" data-short="all">All</button>
+              <button data-dir="etw" data-short="etw">W ← E</button>
+              <button data-dir="wte" data-short="wte">W → E</button>
+            </div>
+            <button class="cycle-arrow" data-cycle="dirToggle" data-cycle-step="1" aria-label="Next direction filter">&#8250;</button>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
           <span style="font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);">Path</span>
-          <div class="dir-toggle" id="pathToggle">
-            <button class="active" data-path="all">All</button>
-            <button data-path="straight">Straight</button>
-            <button data-path="turning">Turning</button>
+          <div class="cycle-row">
+            <button class="cycle-arrow" data-cycle="pathToggle" data-cycle-step="-1" aria-label="Previous path filter">&#8249;</button>
+            <div class="dir-toggle" id="pathToggle">
+              <button class="active" data-path="all" data-short="all">All</button>
+              <button data-path="straight" data-short="str">Straight</button>
+              <button data-path="turning" data-short="trn">Turning</button>
+            </div>
+            <button class="cycle-arrow" data-cycle="pathToggle" data-cycle-step="1" aria-label="Next path filter">&#8250;</button>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
           <span style="font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);">Parking</span>
-          <div class="dir-toggle" id="parkingToggle">
-            <button class="active" data-parking="all">All</button>
-            <button data-parking="parked">Parked</button>
-            <button data-parking="clear">Clear</button>
+          <div class="cycle-row">
+            <button class="cycle-arrow" data-cycle="parkingToggle" data-cycle-step="-1" aria-label="Previous parking filter">&#8249;</button>
+            <div class="dir-toggle" id="parkingToggle">
+              <button class="active" data-parking="all" data-short="all">All</button>
+              <button data-parking="parked" data-short="prk">Parked</button>
+              <button data-parking="clear" data-short="clr">Clear</button>
+            </div>
+            <button class="cycle-arrow" data-cycle="parkingToggle" data-cycle-step="1" aria-label="Next parking filter">&#8250;</button>
           </div>
         </div>
       </div>
@@ -656,8 +721,8 @@ const DATE_STATS = {
     "qualifying": 216
   },
   "2026-07-25": {
-    "total": 51,
-    "qualifying": 51
+    "total": 205,
+    "qualifying": 201
   }
 };
 const Y_MAX_GLOBAL = 69;
@@ -3944,11 +4009,11 @@ const ALL_LEAVES = {
   },
   "2026-07-25": {
   etw_straight_all: [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 2, 1, 2, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 3, 1, 0, 3, 4, 2, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 3, 1, 0, 2, 2, 3, 1, 0, 4, 1, 2, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 2, 1, 2, 6, 0, 1, 2, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -3964,10 +4029,10 @@ const ALL_LEAVES = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
   etw_turning_all: [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -3975,7 +4040,7 @@ const ALL_LEAVES = {
   ],
   etw_turning_parked: [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -3984,30 +4049,30 @@ const ALL_LEAVES = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
   wte_straight_all: [
-    [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 3, 0, 0, 3, 1, 1, 5, 2, 1, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 1, 5, 3, 7, 4, 3, 2, 4, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 1, 3, 2, 2, 4, 4, 2, 3, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
   wte_straight_parked: [
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ],
   wte_turning_all: [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 2, 2, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 1, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -4015,9 +4080,9 @@ const ALL_LEAVES = {
   ],
   wte_turning_parked: [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -4288,7 +4353,7 @@ function renderLegend(dir, path, parking) {
   getSpeedData(dir, path, parking).forEach(b => {
     if (!sumArr(b.counts)) return;
     const el = document.createElement('span');
-    el.innerHTML = '<span class="swatch" style="background:' + b.color + '"></span>' + b.name + ' mph';
+    el.innerHTML = '<span class="swatch" style="background:' + b.color + '"></span>' + b.name + '<span class="mph-suffix"> mph</span>';
     legendEl.appendChild(el);
   });
 }
@@ -4442,7 +4507,7 @@ const chart = new Chart(document.getElementById('chart'), {
   data: {
     labels: HOURS,
     datasets: BANDS.map((b, i) => ({
-      label: b.name + ' mph',
+      label: b.name,
       data: COUNTS['both_all_all'][i],
       borderColor: b.color,
       backgroundColor: b.color,
@@ -4460,12 +4525,15 @@ const chart = new Chart(document.getElementById('chart'), {
     plugins: {
       legend: { display: false },
       tooltip: {
-        callbacks: { footer: items => 'Total: ' + items.reduce((s, it) => s + it.parsed.y, 0) + ' traffic events' }
+        callbacks: {
+          label: item => `${item.dataset.label}${window.matchMedia('(max-width: 640px)').matches ? '' : ' mph'}: ${item.formattedValue}`,
+          footer: items => 'Total: ' + items.reduce((s, it) => s + it.parsed.y, 0) + ' traffic events'
+        }
       }
     },
     scales: {
-      x: { stacked: true, title: { display: true, text: 'Hour of day' }, grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, font: { size: 10 } } },
-      y: { stacked: true, title: { display: true, text: 'Traffic events' }, beginAtZero: true, max: computeYMax(), ticks: { precision: 0 }, grid: { color: 'rgba(0,0,0,0.06)' }, afterFit(s) { s.width = 52; } }
+      x: { stacked: true, title: { display: true, text: 'Hour of day' }, grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, font: { size: 10 }, callback: (val, i) => window.matchMedia('(max-width: 640px)').matches && i % 3 !== 0 ? null : HOURS[i] } },
+      y: { stacked: true, title: { display: true, text: 'Traffic events' }, beginAtZero: true, max: computeYMax(), ticks: { precision: 0 }, grid: { color: 'rgba(0,0,0,0.06)' }, afterFit(s) { s.width = 44; } }
     }
   }
 });
@@ -4615,8 +4683,8 @@ const chartHourCompare = new Chart(document.getElementById('chartHourCompare'), 
       }
     },
     scales: {
-      x: { title: { display: true, text: 'Hour of day' }, grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, font: { size: 10 } } },
-      y: { beginAtZero: true, title: { display: true, text: 'Traffic events' }, ticks: { precision: 0 }, grid: { color: 'rgba(0,0,0,0.06)' }, afterFit(s) { s.width = 52; } }
+      x: { title: { display: true, text: 'Hour of day' }, grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, font: { size: 10 }, callback: (val, i) => window.matchMedia('(max-width: 640px)').matches && i % 3 !== 0 ? null : HOURS[i] } },
+      y: { beginAtZero: true, title: { display: true, text: 'Traffic events' }, ticks: { precision: 0 }, grid: { color: 'rgba(0,0,0,0.06)' }, afterFit(s) { s.width = 44; } }
     }
   }
 });
@@ -5045,6 +5113,19 @@ document.getElementById('parkingToggle').addEventListener('click', e => {
   document.querySelectorAll('#parkingToggle button').forEach(btn =>
     btn.classList.toggle('active', btn.dataset.parking === currentParking));
   applyFilters();
+});
+
+// Mobile: cycle-arrow buttons step through a toggle group's existing buttons,
+// re-firing the same click handling those buttons already have.
+document.querySelectorAll('.cycle-arrow').forEach(arrow => {
+  arrow.addEventListener('click', () => {
+    const toggle = document.getElementById(arrow.dataset.cycle);
+    const buttons = Array.from(toggle.querySelectorAll('button'));
+    const curIdx = buttons.findIndex(b => b.classList.contains('active'));
+    const step = parseInt(arrow.dataset.cycleStep, 10);
+    const nextIdx = (curIdx + step + buttons.length) % buttons.length;
+    buttons[nextIdx].click();
+  });
 });
 
 // Capture-phase: intercept any click inside #dateNav while in compare mode
